@@ -1,0 +1,79 @@
+﻿@page "/login"
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthStateProvider
+
+<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
+    <MudCard>
+        <MudCardHeader>
+            <CardHeaderContent>
+                <MudText Typo="Typo.h5">Giriş Yap</MudText>
+            </CardHeaderContent>
+        </MudCardHeader>
+        <MudCardContent>
+            <MudForm Model="@_loginModel">
+                <MudTextField @bind-Value="_loginModel.Email" 
+                              Label="Email Adresi"
+                              Variant="Variant.Outlined"
+                              For="@(() => _loginModel.Email)"
+                              InputType="InputType.Email"
+                              Required="true"
+                              RequiredError="Email adresi zorunludur."/>
+                <MudTextField @bind-Value="_loginModel.Password"
+                              Label="Şifre"
+                              Variant="Variant.Outlined"
+                              Class="mt-3"
+                              For="@(() => _loginModel.Password)"
+                              InputType="InputType.Password"
+                              Required="true"
+                              RequiredError="Şifre zorunludur."/>
+
+                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+                {
+                    <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+                }
+            </MudForm>
+        </MudCardContent>
+        <MudCardActions>
+            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
+                Giriş Yap
+            </MudButton>
+        </MudCardActions>
+    </MudCard>
+</MudContainer>
+
+@code {
+    private class LoginModel
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private LoginModel _loginModel = new();
+    private string? _errorMessage;
+
+    private async Task HandleLogin()
+    {
+        _errorMessage = null;
+        try
+        {
+            var response = await Http.PostAsJsonAsync("api/login", _loginModel);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var token = await response.Content.ReadAsStringAsync();
+                var jwtAuthProvider = (JwtAuthenticationStateProvider)AuthStateProvider;
+                await jwtAuthProvider.MarkUserAsAuthenticated(token);
+                NavigationManager.NavigateTo("/");
+            }
+            else
+            {
+                _errorMessage = "Email veya şifre hatalı.";
+            }
+        }
+        catch (Exception ex)
+        {
+            _errorMessage = $"Bir hata oluştu: {ex.Message}";
+        }
+    }
+}

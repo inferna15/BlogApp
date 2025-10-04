@@ -11,6 +11,17 @@ builder.Services.AddApplicationServices();
 builder.Services.AddPresentation(builder.Configuration);
 builder.Services.AddInfrastructureServices(builder.Configuration);
 
+// Blazor CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowBlazorApp", policy =>
+    {
+        policy.WithOrigins("https://localhost:7053", "http://localhost:5204")
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,6 +32,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowBlazorApp");
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.Presentation", "Blo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.Infrastructure", "BlogApp.Infrastructure\BlogApp.Infrastructure.csproj", "{76C158EF-038F-4BDC-9EB1-00383D9258B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.Web", "BlogApp.Web\BlogApp.Web\BlogApp.Web.csproj", "{E012955F-EB26-4A1F-BECE-3DB1A9FEC600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlogApp.Web.Client", "BlogApp.Web\BlogApp.Web.Client\BlogApp.Web.Client.csproj", "{18037D14-AAF6-445F-AEA0-F37AA9DD6B7F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{76C158EF-038F-4BDC-9EB1-00383D9258B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76C158EF-038F-4BDC-9EB1-00383D9258B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76C158EF-038F-4BDC-9EB1-00383D9258B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E012955F-EB26-4A1F-BECE-3DB1A9FEC600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E012955F-EB26-4A1F-BECE-3DB1A9FEC600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E012955F-EB26-4A1F-BECE-3DB1A9FEC600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E012955F-EB26-4A1F-BECE-3DB1A9FEC600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18037D14-AAF6-445F-AEA0-F37AA9DD6B7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18037D14-AAF6-445F-AEA0-F37AA9DD6B7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18037D14-AAF6-445F-AEA0-F37AA9DD6B7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18037D14-AAF6-445F-AEA0-F37AA9DD6B7F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

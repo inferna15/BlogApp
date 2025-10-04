@@ -1,0 +1,56 @@
+﻿@inherits LayoutComponentBase
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager NavigationManager
+
+<MudThemeProvider />
+<MudDialogProvider />
+<MudSnackbarProvider />
+
+<MudLayout>
+    <MudAppBar Style="@($"background:{Colors.Gray.Darken4};")">
+        <MudText>
+            <MudLink Href="/" Underline="Underline.None" Typo="Typo.h5" Color="Color.Inherit">
+                BlogApp
+            </MudLink>
+        </MudText>
+
+        <MudButton Href="/posts" Color="Color.Inherit" Class="ml-5">Gönderiler</MudButton>
+
+        <MudSpacer />
+
+        <AuthorizeView>
+            <Authorized>
+                <MudButton Href="/posts/create" Variant="Variant.Outlined" Color="Color.Inherit" Class="mr-2">
+                    Gönderi Oluştur
+                </MudButton>
+
+                <MudMenu Icon="@Icons.Material.Filled.Person" Color="Color.Inherit" Edge="Edge.End">
+                    <MudMenuItem>Hoşgeldin, @context.User.Identity?.Name</MudMenuItem>
+                    <MudDivider />
+                    <MudMenuItem Href="/profile">Profilim</MudMenuItem>
+                    <MudMenuItem OnClick="Logout">Çıkış Yap</MudMenuItem>
+                </MudMenu>
+            </Authorized>
+
+            <NotAuthorized>
+                <MudButton Href="/login" Color="Color.Inherit">Giriş Yap</MudButton>
+                <MudButton Href="/register" Variant="Variant.Outlined" Color="Color.Inherit" Class="ml-2">Kayıt Ol</MudButton>
+            </NotAuthorized>
+        </AuthorizeView>
+    </MudAppBar>
+
+    <MudMainContent Style="@($"background:{Colors.Gray.Darken3};")">
+        <MudContainer MaxWidth="MaxWidth.Large" Class="my-8 pt-8">
+            @Body
+        </MudContainer>
+    </MudMainContent>
+</MudLayout>
+
+@code {
+    private async Task Logout()
+    {
+        var jwtAuthProvider = (JwtAuthenticationStateProvider)AuthStateProvider;
+        await jwtAuthProvider.MarkUserAsLoggedOut();
+        NavigationManager.NavigateTo("/login");
+    }
+}
