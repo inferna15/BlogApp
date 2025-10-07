@@ -1,51 +1,44 @@
 ﻿@page "/login"
+@using System.ComponentModel
 @inject HttpClient Http
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthStateProvider
 
-<MudContainer MaxWidth="MaxWidth.Small" Class="mt-8">
-    <MudCard>
-        <MudCardHeader>
-            <CardHeaderContent>
-                <MudText Typo="Typo.h5">Giriş Yap</MudText>
-            </CardHeaderContent>
-        </MudCardHeader>
-        <MudCardContent>
-            <MudForm Model="@_loginModel">
-                <MudTextField @bind-Value="_loginModel.Email" 
-                              Label="Email Adresi"
-                              Variant="Variant.Outlined"
-                              For="@(() => _loginModel.Email)"
-                              InputType="InputType.Email"
-                              Required="true"
-                              RequiredError="Email adresi zorunludur."/>
-                <MudTextField @bind-Value="_loginModel.Password"
-                              Label="Şifre"
-                              Variant="Variant.Outlined"
-                              Class="mt-3"
-                              For="@(() => _loginModel.Password)"
-                              InputType="InputType.Password"
-                              Required="true"
-                              RequiredError="Şifre zorunludur."/>
-
-                @if (!string.IsNullOrWhiteSpace(_errorMessage))
+<MudContainer MaxWidth="MaxWidth.Small">
+    <EditForm Model="_loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+        <MudCard>
+            <MudCardHeader>
+                <CardHeaderContent>
+                    <MudText>Giriş Yap</MudText>
+                </CardHeaderContent>
+            </MudCardHeader>
+            <MudCardContent>
+                <MudTextField Label="Email" @bind-Value="_loginModel.Email" For="@(() => _loginModel.Email)" />
+                <MudTextField Label="Şifre" @bind-Value="_loginModel.Password" For="@(() => _loginModel.Password)"
+                    InputType="InputType.Password" />
+                @if (!string.IsNullOrEmpty(_errorMessage))
                 {
-                    <MudAlert Severity="Severity.Error" Class="mt-4">@_errorMessage</MudAlert>
+                    <MudAlert Severity="Severity.Error">@_errorMessage</MudAlert>
                 }
-            </MudForm>
-        </MudCardContent>
-        <MudCardActions>
-            <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">
-                Giriş Yap
-            </MudButton>
-        </MudCardActions>
-    </MudCard>
+            </MudCardContent>
+            <MudCardActions>
+                <MudButton ButtonType="ButtonType.Submit" Variant="Variant.Filled" Color="Color.Primary">Giriş Yap
+                </MudButton>
+            </MudCardActions>
+        </MudCard>
+    </EditForm>
 </MudContainer>
 
 @code {
     private class LoginModel
     {
+        [Required(ErrorMessage = "Email gerekli.")]
+        [EmailAddress(ErrorMessage = "Geçersiz email formatı.")]
         public string Email { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Şifre gerekli.")]
+        [MinLength(8, ErrorMessage = "Şifre en az 8 karakter olmalı.")]
         public string Password { get; set; } = string.Empty;
     }
 

@@ -1,13 +1,16 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Threading.Tasks
+@inherits LayoutComponentBase
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JSRuntime
 
-<MudThemeProvider />
+<MudThemeProvider @bind-IsDarkMode="_isDarkMode" Theme="_theme" />
 <MudDialogProvider />
 <MudSnackbarProvider />
+<MudPopoverProvider />
 
 <MudLayout>
-    <MudAppBar Style="@($"background:{Colors.Gray.Darken4};")">
+    <MudAppBar Elevation="1">
         <MudText>
             <MudLink Href="/" Underline="Underline.None" Typo="Typo.h5" Color="Color.Inherit">
                 BlogApp
@@ -17,6 +20,9 @@
         <MudButton Href="/posts" Color="Color.Inherit" Class="ml-5">Gönderiler</MudButton>
 
         <MudSpacer />
+
+        <MudIconButton Icon="@(_isDarkMode? @Icons.Material.Filled.WbSunny : @Icons.Material.Filled.NightsStay)"
+            Color="Color.Inherit" OnClick="ToggleDarkMode" />
 
         <AuthorizeView>
             <Authorized>
@@ -34,12 +40,13 @@
 
             <NotAuthorized>
                 <MudButton Href="/login" Color="Color.Inherit">Giriş Yap</MudButton>
-                <MudButton Href="/register" Variant="Variant.Outlined" Color="Color.Inherit" Class="ml-2">Kayıt Ol</MudButton>
+                <MudButton Href="/register" Variant="Variant.Outlined" Color="Color.Inherit" Class="ml-2">Kayıt Ol
+                </MudButton>
             </NotAuthorized>
         </AuthorizeView>
     </MudAppBar>
 
-    <MudMainContent Style="@($"background:{Colors.Gray.Darken3};")">
+    <MudMainContent>
         <MudContainer MaxWidth="MaxWidth.Large" Class="my-8 pt-8">
             @Body
         </MudContainer>
@@ -47,6 +54,29 @@
 </MudLayout>
 
 @code {
+    private MudTheme _theme = new();
+    private bool _isDarkMode;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var isDarkModeString = await JSRuntime.InvokeAsync<string>("localStorage.getItem", "isDarkMode");
+            if (bool.TryParse(isDarkModeString, out var isDarkMode))
+            {
+                _isDarkMode = isDarkMode;
+                StateHasChanged();
+            }
+        }
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+    private async Task ToggleDarkMode()
+    {
+        _isDarkMode = !_isDarkMode;
+        await JSRuntime.InvokeVoidAsync("localStorage.setItem", "isDarkMode", _isDarkMode.ToString().ToLower());
+    }
+
     private async Task Logout()
     {
         var jwtAuthProvider = (JwtAuthenticationStateProvider)AuthStateProvider;

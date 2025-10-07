@@ -1,0 +1,25 @@
+# Geliştirme ortamına özel ayarlar
+
+services:
+  api:
+    # 'command' satırı ile Dockerfile'daki ENTRYPOINT'i eziyoruz.
+    # Artık uygulama 'dotnet watch' ile çalışacak.
+    command: [ "dotnet", "watch", "run", "--urls", "http://+:80" ]
+    volumes:
+      # Bilgisayarınızdaki kaynak kod klasörlerini, container'ın içindeki
+      # klasörlere canlı olarak bağlıyoruz.
+      - ./BlogApp.Domain:/src/BlogApp.Domain
+      - ./BlogApp.Application:/src/BlogApp.Application
+      - ./BlogApp.Infrastructure:/src/BlogApp.Infrastructure
+      - ./BlogApp.Presentation:/src/BlogApp.Presentation
+      - ./BlogApp.Web:/src/BlogApp.Web # Bu satırı ekledim
+      # NuGet paketlerini cache'lemek için bir volume ekleyelim (hızlandırır)
+      - ~/.nuget/packages:/root/.nuget/packages:ro
+
+  webapp:
+    command: [ "dotnet", "watch", "run", "--urls", "http://+:80" ]
+    volumes:
+      # WebApp için de aynı şekilde kaynak kodları bağlıyoruz
+      - ./BlogApp.Web/BlogApp.Web:/src/BlogApp.Web/BlogApp.Web
+      - ./BlogApp.Web/BlogApp.Web.Client:/src/BlogApp.Web/BlogApp.Web.Client
+      - ~/.nuget/packages:/root/.nuget/packages:ro

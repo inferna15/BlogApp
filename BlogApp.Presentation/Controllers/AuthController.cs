@@ -1,6 +1,7 @@
 ﻿using BlogApp.Application.Features.Users;
 using BlogApp.Presentation.Dtos.Auth;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,6 +12,7 @@ namespace BlogApp.Presentation.Controllers
     public class AuthController(ISender sender) : ControllerBase
     {
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginDto dto)
         {
             var command = new LoginUser.Command(dto.Email, dto.Password);
@@ -18,11 +20,12 @@ namespace BlogApp.Presentation.Controllers
 
             if (result.IsSuccess)
                 return Ok(result.Data);
-            else 
+            else
                 return Unauthorized(result.ErrorMessage);
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             var command = new RegisterUser.Command(dto.UserName, dto.Email, dto.Password);

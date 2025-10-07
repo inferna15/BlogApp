@@ -2,6 +2,7 @@ using BlogApp.Application;
 using BlogApp.Infrastructure;
 using BlogApp.Infrastructure.Persistence;
 using BlogApp.Presentation;
+using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowBlazorApp", policy =>
     {
-        policy.WithOrigins("https://localhost:7053", "http://localhost:5204")
+        policy.WithOrigins("http://localhost:8080")
               .AllowAnyHeader()
               .AllowAnyMethod();
     });
@@ -31,7 +32,10 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference();
 }
 
-app.UseHttpsRedirection();
+// SSL sorunları için yorum satırına alındı
+//app.UseHttpsRedirection();
+
+app.UseRouting();
 
 app.UseCors("AllowBlazorApp");
 
@@ -45,6 +49,12 @@ using (var scope = app.Services.CreateScope())
     var services = scope.ServiceProvider;
     try
     {
+        var database = services.GetRequiredService<AppDbContext>();
+        if (database.Database.IsRelational())
+        {
+            await database.Database.MigrateAsync();
+        }
+
         var seeder = services.GetRequiredService<DataSeeder>();
         await seeder.SeedAsync();
     }

@@ -19,7 +19,7 @@ builder.Services.AddScoped(sp =>
 {
     var authHeaderHandler = sp.GetRequiredService<AuthHeaderHandler>();
     authHeaderHandler.InnerHandler = new HttpClientHandler();
-    var apiBaseApiAddress = new Uri("https://localhost:5012/");
+    var apiBaseApiAddress = new Uri("http://api");
 
     return new HttpClient(authHeaderHandler) { BaseAddress = apiBaseApiAddress };
 });
@@ -41,7 +41,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 
 app.UseAntiforgery();

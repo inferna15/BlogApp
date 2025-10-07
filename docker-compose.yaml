@@ -1,0 +1,28 @@
+services:
+  # 1. Servis: API
+  api:
+    container_name: blog_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api-final
+    ports:
+      - "8081:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Data Source=blogapp.db
+
+  # 2. Servis: Web Arayüzü
+  webapp:
+    container_name: blog_webapp
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: webapp-final
+    ports:
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ApiBaseUrl=http://api
+    depends_on:
+      - api
